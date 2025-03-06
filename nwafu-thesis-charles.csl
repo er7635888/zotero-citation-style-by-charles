@@ -6,8 +6,8 @@
   <info>
     <title>西北农林科技大学毕业论文样式</title>
     <title-short>NWAFU Thesis (by.Charles)</title-short>
-    <id>https://gitee.com/er7635888/zotero-citation-style-by-charles/nwafu-thesis-charles.csl</id>
-    <link href="https://gitee.com/er7635888/zotero-citation-style-by-charles/nwafu-thesis-charles" rel="self"/>
+    <id>https://gitee.com/er7635888/zotero-citation-style-by-charles/nwafu-thesis-charles</id>
+    <link href="https://gitee.com/er7635888/zotero-citation-style-by-charles/nwafu-thesis-charles.csl" rel="self"/>
     <link href="https://gitee.com/er7635888/zotero-citation-style-by-charles/nwafu-thesis-charles" rel="template"/>
     <link href="http://www.std.gov.cn/gb/search/gbDetailed?id=71F772D8055ED3A7E05397BE0A0AB82A" rel="documentation"/>
     <author>
@@ -17,7 +17,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>NWAFU Thesis</summary>
-    <updated>2025-03-06T16:30:53+00:00</updated>
+    <updated>2025-03-06T20:30:53</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
 
@@ -25,7 +25,7 @@
 
   <locale xml:lang="en">
     <terms>
-      <term name="page-range-delimiter">~</term>
+      <term name="page-range-delimiter">-</term>
       <term name="et-al">et al.</term>
     </terms>
   </locale>
@@ -86,7 +86,7 @@
     <choose>
       <if variable="author">
         <names variable="author" font-variant="normal">
-          <name form="long" delimiter="" and="text" et-al-min="3"/>
+          <name form="long" delimiter=", " and="text" et-al-min="3"/>
         </names>
       </if>
       <else>
@@ -164,11 +164,19 @@
   </macro>
 
   <macro name="serial-information">
-    <group delimiter=", ">
-      <text variable="volume"/>
-    </group>
-    <text variable="issue" prefix="(" suffix=")"/>
-    <text variable="page" prefix=": "/>
+    <choose>
+      <if variable="issue volume" match="any">
+        <group delimiter=", " suffix=": ">
+          <text variable="volume"/>
+          <text variable="issue" prefix="(" suffix=")"/>
+        </group>    
+        <text variable="page"/>
+      </if>
+      <else>
+        <text variable="DOI" prefix="doi."/>
+      </else>
+    </choose>
+
   </macro>
 
 
@@ -202,28 +210,38 @@
           <if variable="container-title">
             <text value="//"/>
             <text macro="container-author" suffix=". "/>
-            <text variable="container-title" text-case="title" prefix="In:" suffix=". " font-style="italic"/>
+            <text variable="container-title" text-case="title" prefix="In:" suffix=". "/>
           </if>
           <else>
-            <text value=". "/>
+            <text value=""/>
           </else>
         </choose>
         <text macro="edition" suffix=". "/>
         <choose>
-          <if type="thesis">
+          <if type="thesis book">
             <group delimiter="" prefix="[" suffix="]. ">
-              <text variable="genre"/>
-              <text value="学位论文"/>
+              <text macro="type-code"/>
             </group>
           </if>
         </choose>
         <text macro="publishing"/>
       </if>
       <else-if type="article-journal article-magazine article-newspaper" match="any">
+        <group prefix="[" suffix="]">
+          <choose>
+            <if variable="volume issue" match="any">
+              <text macro="type-code" text-case="title"/>
+            </if>
+            <else>
+              <text macro="type-code" text-case="title"/>
+              <text value="OL" prefix="/"/>
+            </else>
+          </choose>
+        </group>
         <group prefix=". ">
           <choose>
             <if variable="container-title">
-              <text variable="container-title" text-case="title" font-style="italic"/>
+              <text variable="container-title" text-case="title"/>
               <text macro="serial-information" prefix=", "/>
             </if>
             <else>
@@ -257,7 +275,7 @@
     <!-- <text macro="accessed-date" /> -->
   </macro>
 
-  <!-- <macro name="type-code">
+  <macro name="type-code">
     <choose>
       <if type="article-journal article-magazine" match="any">
         <text value="J" />
@@ -296,7 +314,7 @@
         <text value="Z" />
       </else>
     </choose>
-  </macro> -->
+  </macro>
 
   <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" collapse="year">
 
@@ -305,7 +323,7 @@
       <key macro="issue-date-year"/>
     </sort>
 
-    <layout locale="en" prefix="(" suffix=")" delimiter="; ">
+    <layout locale="en" prefix="（" suffix="）" delimiter="; ">
       <group delimiter=" ">
         <text macro="author-intext"/>
         <text macro="issue-date-year"/>
@@ -316,7 +334,7 @@
       </group>
     </layout>
 
-    <layout prefix="(" suffix=")" delimiter="; ">
+    <layout prefix="（" suffix="）" delimiter="; ">
       <group delimiter=" ">
         <text macro="author-intext-long"/>
         <text macro="issue-date-year"/>
@@ -331,6 +349,7 @@
 
   <bibliography entry-spacing="0" et-al-min="3" et-al-use-first="100" hanging-indent="true">
     <sort>
+      <!-- <key variable="language" sort="descending"/> -->
       <key macro="author-intext"/>
       <key macro="issue-date-year"/>
     </sort>
